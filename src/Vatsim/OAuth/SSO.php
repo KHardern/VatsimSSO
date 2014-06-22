@@ -2,7 +2,7 @@
 
 /**
  * @author Kieran Hardern
- * @version 0.1
+ * @version 1.0a
  */
 
 use Redirect;
@@ -13,69 +13,78 @@ use Eher\OAuth\HmacSha1;
 use Eher\OAuth\Request;
 
 class SSO {
-	
-	/*
-	 * Location of the VATSIM SSO system (obtain from documentation or VATSIM)
-	 */
-	private $base = '';
-	
-	/*
-	 * Location for all OAuth requests, (obtain from documentation or VATSIM)
-	 */
-	private $loc_api = 'api/';
-	
-	/*
-	 * Location for all login token requests
-	 */
-	private $loc_token = 'login_token/';
-	
-	/*
-	 * Location to query for all user data requests (upon return of user login)
-	 */
-	private $loc_return = 'login_return/';
-	
-	/*
-	 * Location to redirect the user to once we have generated a token
-	 */
-	private $loc_login = 'auth/pre_login/?oauth_token=';
-	
-	/*
-	 * Format of the data returned by SSO, select json or xml
-	 */
-	private $format = 'json';
-	
-	/*
-	 * cURL timeout (seconds) for all requests
-	 */
-	private $timeout = 10;
-	
-	/*
-	 * Holds the latest error information for the class
-	 */
-	private $error = array(
-		'type' => false,
-		'message' => false,
-		'code' => false
-	);
-	
-	/*
-	 * The signing method being used to encrypt your request signature.
-	 * Set the 'signature' method
-	 */
-	private $signature = false;
-	
-	/*
-	 * A request token genereted by (or saved to) the class
-	 */
-	private $token = false;
-	
-	/*
-	 * Consumer credentials, instance of Consumer
-	 */
-	private $consumer = false;
-	
-	private $request = false;
-
+    
+    /*
+     * Location of the VATSIM SSO system 
+     * Set in __construct
+     */
+    private $base = '';
+    
+    /*
+     * Location for all OAuth requests
+     */
+    private $loc_api = 'api/';
+    
+    /*
+     * Location for all login token requests
+     */
+    private $loc_token = 'login_token/';
+    
+    /*
+     * Location to query for all user data requests (upon return of user login)
+     */
+    private $loc_return = 'login_return/';
+    
+    /*
+     * Location to redirect the user to once we have generated a token
+     */
+    private $loc_login = 'auth/pre_login/?oauth_token=';
+    
+    /*
+     * Format of the data returned by SSO, default json
+     * Set in responseFormat method
+     */
+    private $format = 'json';
+    
+    /*
+     * cURL timeout (seconds) for all requests
+     */
+    private $timeout = 10;
+    
+    /*
+     * Holds the details of the most recent error in this class
+     */
+    private $error = array(
+        'type'=>false,
+        'message'=>false,
+        'code'=>false
+    );
+    
+    /*
+     * The signing method being used to encrypt your request signature.
+     * Set the 'signature' method
+     */
+    private $signature = false;
+    
+    /*
+     * A request token genereted by (or saved to) the class
+     */
+    private $token = false;
+    
+    /*
+     * Consumer credentials, instance of OAuthConsumer
+     */
+    private $consumer = false;
+    
+    /**
+     * Configures the SSO class with consumer/organisation credentials
+     * 
+     * @param type $key             Organisation key
+     * @param type $secret          Secret key corresponding to this organisation (only required if using HMAC)
+     * @param string $signature     RSA|HMAC
+     * @param string $private_key   openssl RSA private key (only required if using RSA)
+     */
+    
 	public function __construct() {
 
 		$this->base = Config::get('sso::base');
@@ -91,12 +100,12 @@ class SSO {
 		}
 	}
 	
-	/**
-	 * Return or change the output format 
-	 * 
-	 * @param string $change json|xml
-	 * @return string current format or bool false
-	 */
+    /**
+     * Return or change the output format (returned by VATSIM)
+     * 
+     * @param string $change        json|xml
+     * @return string               current format or bool false (unable to set format)
+     */
 	public function format($change = false) {
 		
 		// lower case values only
@@ -125,14 +134,13 @@ class SSO {
 		}
 	}
 	
-	/**
-	 * Set the signing method to be used to encrypt request signature.
-	 * RSA is preferred
-	 * 
-	 * @param string $signature RSA|HMAC
-	 * @param string $private_key
-	 * @return boolean
-	 */
+    /**
+     * Set the signing method to be used to encrypt request signature.
+     * 
+     * @param string $signature         Signature encryption method: RSA|HMAC
+     * @param string $private_key       openssl RSA private key (only needed if using RSA)
+     * @return boolean                  true if able to use this signing type
+     */
 	public function signature($signature, $private_key = false) {
 		
 		$signature = strtoupper($signature);
@@ -163,14 +171,14 @@ class SSO {
 		
 	}
 	
-	/**
-	 * Request a login token from VATSIM (required to send someone for an SSO login)
-	 * 
-	 * @param string $return_url URL for VATSIM to return memers to after login
-	 * @param boolean $allow_sus true to allow suspended VATSIM accounts to log in
-	 * @param boolean $allow_ina true to allow inactive VATSIM accounts to log in
-	 * @return object|boolean
-	 */
+    /**
+     * Request a login token from VATSIM (required to send someone for an SSO login)
+     * 
+     * @param string $return_url        URL for VATSIM to return memers to after login
+     * @param boolean $allow_sus        true to allow suspended VATSIM accounts to log in
+     * @param boolean $allow_ina        true to allow inactive VATSIM accounts to log in
+     * @return object|boolean
+     */
 	public function requestToken($return_url=false, $allow_sus=false, $allow_ina=false) {
 		
 		// signature method must have been set
@@ -246,11 +254,11 @@ class SSO {
 		
 	}
 	
-	/**
-	 * Redirect the user to VATSIM to log in/confirm login
-	 * 
-	 * @return boolean|Redirect
-	 */
+    /**
+     * Redirect the user to VATSIM to log in/confirm login
+     * 
+     * @return boolean              false if failed
+     */
 	public function sendToVatsim() {
 		
 		$url = $this->getLoginUrl();
@@ -275,12 +283,12 @@ class SSO {
 	}
 	
 	/**
-	 * Obtains a user's login details from a token key and secret
-	 * 
-	 * @param string $tokenKey
-	 * @param secret $tokenSecret
-	 * @return object|false
-	 */
+     * Obtains a user's login details from a token key and secret
+     * 
+     * @param string $tokenKey      The token key provided by VATSIM
+     * @param secret $tokenSecret   The secret associated with the token
+     * @return object|false         false if error, otherwise returns user details
+     */
 	public function checkLogin($tokenKey, $tokenSecret, $tokenVerifier) {
 		
 		$this->token = new Consumer($tokenKey, $tokenSecret);
@@ -334,12 +342,12 @@ class SSO {
 	}
 	
 	/**
-	 * Perform a (post) cURL request
-	 * 
-	 * @param type $url
-	 * @param type $requestString
-	 * @return boolean
-	 */
+     * Perform a (post) cURL request
+     * 
+     * @param type $url             Destination of request
+     * @param type $requestString   Query string of data to be posted
+     * @return boolean              true if able to make request
+     */
 	private function curlRequest($url, $requestString) {
 		
 		// using cURL to post the request to VATSIM
@@ -376,11 +384,11 @@ class SSO {
 	}
 	
 	/**
-	 * Convert the response into a usable format
-	 * 
-	 * @param type $response
-	 * @return object
-	 */
+     * Convert the response into a usable format
+     * 
+     * @param string $response      json|xml
+     * @return object               Format processed into an object (Simple XML Element or json_decode)
+     */
 	private function responseFormat($response) {
 		
 		if ($this->format=='xml'){
@@ -392,10 +400,10 @@ class SSO {
 	}
 	
 	/**
-	 * Obtain the last generated error from this class
-	 * 
-	 * @return array
-	 */
+     * Obtain the last generated error from this class
+     * 
+     * @return array                Array of the latest error
+     */
 	public function error() {
 		return $this->error;
 	}
