@@ -28,7 +28,7 @@
         "illuminate/http": "4.*",
         "illuminate/config": "4.*",
         "illuminate/support": "4.*",
-        "eher/oauth": "dev-master"
+        "eher/oauth": "1.*"
     },
     "autoload": {
         "psr-0": {
