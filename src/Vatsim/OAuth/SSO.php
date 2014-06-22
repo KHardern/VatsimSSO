@@ -5,8 +5,8 @@
  * @version 1.0a
  */
 
-use Redirect;
-use Config;
+use Closure;
+use Illuminate\Container\Container;
 
 use Eher\OAuth\Consumer;
 use Eher\OAuth\HmacSha1;
@@ -75,28 +75,35 @@ class SSO {
      * Consumer credentials, instance of OAuthConsumer
      */
     private $consumer = false;
+
+    /**
+	 * The container instance.
+	 *
+	 * @var \Illuminate\Container\Container
+	 */
+	protected $container;
     
     /**
      * Configures the SSO class with consumer/organisation credentials
      * 
-     * @param type $key             Organisation key
-     * @param type $secret          Secret key corresponding to this organisation (only required if using HMAC)
-     * @param string $signature     RSA|HMAC
-     * @param string $private_key   openssl RSA private key (only required if using RSA)
+     * @param string $base            SSO Server URL
+     * @param string $key             Organisation key
+     * @param string $secret          Secret key corresponding to this organisation (only required if using HMAC)
+     * @param string $method          RSA|HMAC
+     * @param string $cert            openssl RSA private key (only required if using RSA)
      */
-    
-	public function __construct() {
+	public function __construct($base, $key, $secret = false, $method = false, $cert = false) {
 
-		$this->base = Config::get('sso::base');
+		$this->container = new Container;
+
+		$this->base = $base;
 			
 		// Store consumer credentials
-		$this->consumer = new Consumer(Config::get('sso::key'), Config::get('sso::secret'));
+		$this->consumer = new Consumer($key, $secret);
 		
-		$method = Config::get('sso::method');
-
 		// if signature method is defined, set the signature method now (can be set or changed later)
 		if ($method){
-			$this->signature($method, Config::get('sso::cert'));
+			$this->signature($method, $cert);
 		}
 	}
 	
@@ -260,19 +267,6 @@ class SSO {
      * @return boolean              false if failed
      */
 	public function sendToVatsim() {
-		
-		$url = $this->getLoginUrl();
-		
-		// redirect to the SSO login location, appending the token
-		return $url ? Redirect::to($url) : false;
-	}
-
-	/**
-	 * Return the redirect url to VATSIM to log in/confirm login
-	 * 
-	 * @return boolean|string
-	 */
-	public function getLoginUrl() {
 		// a token must have been returned to redirect this user
 		if (!$this->token){
 			return false;
@@ -406,6 +400,62 @@ class SSO {
      */
 	public function error() {
 		return $this->error;
+	}
+
+	public function login($returnUrl, $success, $error = null)
+	{
+		if($token = $this->requestToken($returnUrl))
+		{
+			return $this->callResponse($success, array(
+				(string) $token->token->oauth_token,
+				(string) $token->token->oauth_token_secret,
+				$this->sendToVatsim()
+			));
+		}
+		else
+		{
+			if(is_null($error))
+				return false;
+
+			return $this->callResponse($error, array($this->error()));
+		}
+	}
+
+	public function validate($key, $secret, $verifier, $success, $error = null)
+	{
+		if($request = $this->checkLogin($key, $secret, $verifier))
+		{
+			return $this->callResponse($success, array(
+				$request->user,
+				$request->request
+			));
+		}
+		else
+		{
+			if(is_null($error))
+				return false;
+
+			return $this->callResponse($error, array($this->error()));
+		}
+	}
+
+	protected function callResponse($callback, $parameters)
+	{
+		if ($callback instanceof Closure)
+		{
+			return call_user_func_array($callback, $parameters);
+		}
+		elseif (is_string($callback))
+		{
+			return $this->callClassBasedResponse($callback, $parameters);
+		}
+	}
+
+	protected function callClassBasedResponse($callback, $parameters)
+	{
+		list($class, $method) = explode('@', $callback);
+
+		return call_user_func_array(array($this->container->make($class), $method), $parameters);
 	}
 	
 }
