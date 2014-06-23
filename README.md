@@ -13,13 +13,8 @@ Installation
 
 Use [Composer](http://getcomposer.org) to install the VatsimSSO and dependencies.
 
-```json
-// ..
-"require": {
-    // other packages
-    "vatsim/sso": "1.*",
-},
-// ..
+```sh
+$ composer require vatsim/sso 1.*
 ```
 
 ### Laravel
