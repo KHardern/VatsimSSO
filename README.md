@@ -1,7 +1,7 @@
 VatsimSSO
 =========
 
-VatsimSSO lets your users log themselves in using their VATSIM ID. This is especially useful for official vACCs and ARTCCs.
+The VatsimSSO package integrates with the VATSIM.net Single Sign On, which lets your users log themselves in using their VATSIM ID. This is especially useful for official vACCs and ARTCCs.
 
 Version
 ----
@@ -47,18 +47,18 @@ Let's first create a configuration file to keep our code clean.
 /*
  * The location of the VATSIM OAuth interface
  */
-$base = 'https://cert.vatsim.net/sso/';
+$base = 'https://';
 
 /*
  * The consumer key for your organisation (provided by VATSIM)
  */
-$key = '';
+$key = 'MY_KEY';
 
 /*
  * The secret key for your organisation (provided by VATSIM)
  * Do not give this to anyone else or display it to your users. It must be kept server-side
  */
-$secret = '';
+$secret = 'my_secret';
 
 /*
  * The signing method you are using to encrypt your request signature.
