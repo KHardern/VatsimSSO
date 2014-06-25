@@ -4,7 +4,7 @@ return array(
 	/*
 	 * The location of the VATSIM OAuth interface
 	 */
-	'base' => 'https://cert.vatsim.net/sso/',
+	'base' => '',
 
 	/*
 	 * The consumer key for your organisation (provided by VATSIM)

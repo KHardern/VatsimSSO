@@ -1,7 +1,6 @@
 <?php namespace Vatsim\OAuth;
 
 /**
- * @author Kieran Hardern
  * @version 1.0a
  */
 
