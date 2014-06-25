@@ -45,6 +45,11 @@ $ artisan config:publish vatsim/sso
 Let's first create a configuration file to keep our code clean.
 ```php
 /*
+ * DO NOT PUBLISH THE KEY, SECRET AND CERT TO CODE REPOSITORIES
+ * FOR SECURITY.
+ */
+
+/*
  * The location of the VATSIM OAuth interface
  */
 $base = 'https://';
@@ -98,11 +103,14 @@ The first step would be to send a request to VATSIM to let the user login. The e
 #### Parameters
 | Parameter       | Type   | Description |
 | --------------- | ------ | ----------- |
-| `$returnUrl`    | string | The URL to which the user should be redirected after the login is successful |
+| `$returnUrl`    | string &#124; array | The URL to which the user should be redirected after the login is successful |
 | `$success`      | string &#124; Closure | Callback function containing the actions needed to be done when you are able to let the user authenticate (ie. when your key/secret are correct). The function will return three variables: `$key`, `$secret` and `$url`. |
 | *`$error`*      | string &#124; Closure | *Default: null* – Callback function containing the actions needed to be done when your credentials (ie. key/secret) are incorrect. |
 
 For both `$success` and `$error`, you may pass a string in `[class]@[method]` format to call a function in another Model, otherwise pass an anonymous function.
+
+#### Return URL
+The return URL parameter will also take an array instead of a string. In this array you can add the values `suspended` and/or `inactive` to allow members with suspended or inactive accounts to log in. The first element of this array that is a valid URL will be used as the return URL.
 
 #### Success
 The success parameter returns three variables: `$key`, `$secret` and `$url`. The `key` and `secret` should be stored in a session for the validation process. The `url` will be used to redirect the user to the VATSIM SSO site.

@@ -1,4 +1,11 @@
 <?php
+/*
+ * DO NOT PUBLISH THE KEY, SECRET AND CERT TO CODE REPOSITORIES
+ * FOR SECURITY. PLEASE USE LARAVEL'S .env.php FILES TO PROTECT
+ * SENSITIVE DATA.
+ * http://laravel.com/docs/configuration#protecting-sensitive-configuration
+ */
+
 return array(
 
 	/*

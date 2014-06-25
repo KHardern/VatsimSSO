@@ -4,7 +4,7 @@
  * @version 1.0a
  */
 
-use Closure;
+use Closure, Exception, InvalidArgumentException;
 use Illuminate\Container\Container;
 
 use Eher\OAuth\Consumer;
@@ -403,7 +403,23 @@ class SSO {
 
 	public function login($returnUrl, $success, $error = null)
 	{
-		if($token = $this->requestToken($returnUrl))
+		if(is_array($returnUrl)) {
+			$allow_sus = in_array('suspended', $returnUrl);
+			$allow_ina = in_array('inactive', $returnUrl);
+			
+			$returnUrl = array_values(array_filter($returnUrl, function($val) {
+				return filter_var($val, FILTER_VALIDATE_URL);
+			}));
+
+			if(count($returnUrl) == 0) {
+				throw new InvalidArgumentException('No return URL can be found.');
+			}
+		} else {
+			$allow_sus = false;
+			$allow_ina = false;
+		}
+
+		if($token = $this->requestToken($returnUrl, $allow_sus, $allow_ina))
 		{
 			return $this->callResponse($success, array(
 				(string) $token->token->oauth_token,
