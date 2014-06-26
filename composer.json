@@ -25,10 +25,9 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "illuminate/http": "4.*",
-        "illuminate/config": "4.*",
         "illuminate/support": "4.*",
-        "eher/oauth": "dev-master"
+        "illuminate/container": "4.*",
+        "bonroyage/oauth": "1.*"
     },
     "autoload": {
         "psr-0": {

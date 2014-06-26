@@ -1,10 +1,17 @@
 <?php
+/*
+ * DO NOT PUBLISH THE KEY, SECRET AND CERT TO CODE REPOSITORIES
+ * FOR SECURITY. PLEASE USE LARAVEL'S .env.php FILES TO PROTECT
+ * SENSITIVE DATA.
+ * http://laravel.com/docs/configuration#protecting-sensitive-configuration
+ */
+
 return array(
 
 	/*
 	 * The location of the VATSIM OAuth interface
 	 */
-	'base' => 'https://cert.vatsim.net/sso/',
+	'base' => '',
 
 	/*
 	 * The consumer key for your organisation (provided by VATSIM)

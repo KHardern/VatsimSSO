@@ -30,7 +30,13 @@ class OAuthServiceProvider extends ServiceProvider {
 	{
 		$this->app['vatsimoauth'] = $this->app->share(function($app)
 		{
-			return new SSO;
+			return new SSO(
+				$app['config']->get('sso::base'), // base
+				$app['config']->get('sso::key'), // key
+				$app['config']->get('sso::secret'), // secret
+				$app['config']->get('sso::method'), // method
+				$app['config']->get('sso::cert') // certificate 
+			);
 		});
 	}
 
