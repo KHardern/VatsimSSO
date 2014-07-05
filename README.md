@@ -40,6 +40,8 @@ Use artisan to publish the configuration file. After running the command you wil
 ```sh
 $ artisan config:publish vatsim/sso
 ```
+It is __strongly__ recommended you use Laravel's built-in suppport for environment files to protect sensitive data. Additional details in config.php
+
 
 ### Outside Laravel
 Let's first create a configuration file to keep our code clean.
