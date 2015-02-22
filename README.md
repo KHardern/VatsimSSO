@@ -1,6 +1,8 @@
 VatsimSSO
 =========
 
+**Laravel 4 compatible, use [version 2](https://github.com/KHardern/VatsimSSO/tree/develop) for Laravel 5**
+
 The VatsimSSO package integrates with the VATSIM.net Single Sign On, which lets your users log themselves in using their VATSIM ID. This is especially useful for official vACCs and ARTCCs.
 
 Version
