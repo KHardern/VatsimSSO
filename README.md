@@ -6,7 +6,7 @@ The VatsimSSO package integrates with the VATSIM.net Single Sign On, which lets 
 Version
 ----
 
-1.0
+2.0
 
 Installation
 --------------
@@ -14,12 +14,12 @@ Installation
 Use [Composer](http://getcomposer.org) to install the VatsimSSO and dependencies.
 
 ```sh
-$ composer require vatsim/sso 1.*
+$ composer require vatsim/sso 2.*
 ```
 
 ### Laravel
 #### Set up
-Using VatsimSSO in Laravel is made easy through the use of Service Providers. Add the service provider to your `app/config/app.php` file:
+Using VatsimSSO in Laravel is made easy through the use of Service Providers. Add the service provider to your `config/app.php` file:
 ```php
 'providers' => array(
     // ...
@@ -36,9 +36,9 @@ Followed by the alias:
 ```
 
 #### Configuration file
-Use artisan to publish the configuration file. After running the command you will find the file in `app/config/packages/vatsim/sso/config.php`. Change the settings accordingly.
+Use artisan to publish the configuration file. After running the command you will find the file in `config/vatsim-sso.php`. Change the settings accordingly.
 ```sh
-$ artisan config:publish vatsim/sso
+$ artisan vendor:publish
 ```
 It is __strongly__ recommended you use Laravel's built-in suppport for environment files to protect sensitive data. Additional details in config.php
 
@@ -124,7 +124,7 @@ Optional parameter. If this parameter is ignored and an error occurs, the functi
 ```php
 // Laravel
 return VatsimSSO::login(
-    Config::get('vatsimsso:return'),
+    Config::get('vatsim-sso.return'),
     function($key, $secret, $url) {
         Session::put('vatsimauth', compact('key', 'secret'));
         return Redirect::to($url);

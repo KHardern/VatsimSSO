@@ -11,6 +11,10 @@ class OAuthServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+	protected function dir($path) {
+		return __DIR__.'/../../' . $path;
+	}
+
 	/**
 	 * Bootstrap the application events.
 	 *
@@ -18,7 +22,9 @@ class OAuthServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('vatsim/sso');
+		$this->publishes([
+			$this->dir('config/config.php') => config_path('vatsim-sso.php')
+		]);
 	}
 
 	/**
@@ -31,11 +37,11 @@ class OAuthServiceProvider extends ServiceProvider {
 		$this->app['vatsimoauth'] = $this->app->share(function($app)
 		{
 			return new SSO(
-				$app['config']->get('sso::base'), // base
-				$app['config']->get('sso::key'), // key
-				$app['config']->get('sso::secret'), // secret
-				$app['config']->get('sso::method'), // method
-				$app['config']->get('sso::cert') // certificate 
+				$app['config']->get('vatsim-sso.base'), // base
+				$app['config']->get('vatsim-sso.key'), // key
+				$app['config']->get('vatsim-sso.secret'), // secret
+				$app['config']->get('vatsim-sso.method'), // method
+				$app['config']->get('vatsim-sso.cert') // certificate 
 			);
 		});
 	}
