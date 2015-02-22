@@ -126,7 +126,7 @@ Optional parameter. If this parameter is ignored and an error occurs, the functi
 return VatsimSSO::login(
     Config::get('vatsimsso:return'),
     function($key, $secret, $url) {
-        Session::put('vatsimauth', compact('key', 'secret');
+        Session::put('vatsimauth', compact('key', 'secret'));
         return Redirect::to($url);
     },
     function($error) {
