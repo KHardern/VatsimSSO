@@ -204,7 +204,7 @@ class SSO {
 		
 		// generate a token request from the consumer details
 		$req = Request::from_consumer_and_token($this->consumer, false, "POST", $tokenUrl, array(
-			'oauth_callback' => $return_url,
+			'oauth_callback' => (String) $return_url,
 			'oauth_allow_suspended' => ($allow_sus) ? true : false,
 			'oauth_allow_inactive' => ($allow_ina) ? true : false
 		));
