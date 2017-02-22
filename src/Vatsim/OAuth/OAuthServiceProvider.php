@@ -34,14 +34,23 @@ class OAuthServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app['vatsimoauth'] = $this->app->share(function($app)
-		{
+		// $this->app['vatsimoauth'] = $this->app->share(function($app)
+		// {
+		// 	return new SSO(
+		// 		$app['config']->get('vatsim-sso.base'), // base
+		// 		$app['config']->get('vatsim-sso.key'), // key
+		// 		$app['config']->get('vatsim-sso.secret'), // secret
+		// 		$app['config']->get('vatsim-sso.method'), // method
+		// 		$app['config']->get('vatsim-sso.cert') // certificate
+		// 	);
+		// });
+		$this->app->bind('vatsimoauth', function($app){
 			return new SSO(
-				$app['config']->get('vatsim-sso.base'), // base
-				$app['config']->get('vatsim-sso.key'), // key
-				$app['config']->get('vatsim-sso.secret'), // secret
-				$app['config']->get('vatsim-sso.method'), // method
-				$app['config']->get('vatsim-sso.cert') // certificate 
+				$app['config']->get('vatsim-sso.base'),
+				$app['config']->get('vatsim-sso.key'),
+				$app['config']->get('vatsim-sso.secret'),
+				$app['config']->get('vatsim-sso.method'),
+				$app['config']->get('vatsim-sso.cert')
 			);
 		});
 	}
@@ -53,7 +62,8 @@ class OAuthServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array('vatsimoauth');
+		// return array('vatsimoauth');
+		return [SSO::class];
 	}
 
 }

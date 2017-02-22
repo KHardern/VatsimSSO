@@ -8,7 +8,7 @@ The VatsimSSO package integrates with the VATSIM.net Single Sign On, which lets 
 Version
 ----
 
-2.0
+2.0.1
 
 Installation
 --------------
@@ -180,7 +180,7 @@ return VatsimSSO::validate(
     function($user, $request) {
         // At this point we can remove the session data.
         Session::forget('vatsimauth');
-        
+
         Auth::loginUsingId($user->id);
         return Redirect::home();
     },
@@ -199,10 +199,10 @@ $sso->validate(
     function($user, $request) {
         // At this point we can remove the session data.
         unset($_SESSION['vatsimauth']);
-        
+
         // do something to log the user in on your site using the user id
         // $user->id
-        
+
         // Redirect home
         header('Location: /');
         die();
