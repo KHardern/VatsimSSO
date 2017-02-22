@@ -1,38 +1,35 @@
 {
-    "name": "vatsim/sso",
-    "description": "VATSIM OAuth",
-    "keywords": [
+    "name" : "vatsim/sso",
+    "description" : "VATSIM OAuth",
+    "keywords" : [
         "vatsim",
         "oauth",
-        "laravel",
         "sso"
     ],
-    "license": "MIT",
-    "authors": [
+    "license" : "MIT",
+    "authors" : [
         {
-            "name": "Kieran Hardern",
-            "email": "kieran@hardern.net"
+            "name" : "Kieran Hardern",
+            "email" : "kieran@hardern.net"
         },
         {
-            "name": "Roy de Vos Burchart",
-            "email": "dev@bonroyage.com",
-            "homepage": "http://www.bonroyage.com"
+            "name" : "Roy de Vos Burchart",
+            "email" : "dev@bonroyage.com",
+            "homepage" : "http://www.bonroyage.com"
         }
     ],
-    "support": {
-        "issues": "https://github.com/KHardern/VatsimSSO/issues",
-        "wiki": "https://github.com/KHardern/VatsimSSO/wiki"
+    "support" : {
+        "issues" : "https://github.com/KHardern/VatsimSSO/issues",
+        "wiki" : "https://github.com/KHardern/VatsimSSO/wiki"
     },
-    "require": {
-        "php": ">=5.4.0",
-        "illuminate/support": "5.*",
-        "illuminate/container": "5.*",
-        "bonroyage/oauth": "1.*"
+    "require" : {
+        "php" : ">=5.4.0",
+        "bonroyage/oauth" : "1.*"
     },
-    "autoload": {
-        "psr-0": {
-            "Vatsim\\OAuth": "src/"
+    "autoload" : {
+        "psr-4" : {
+            "Vatsim\\OAuth\\" : "src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability" : "dev"
 }
